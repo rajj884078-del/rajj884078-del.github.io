@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raj Jaiswal</title>
+<meta name="description" content="Started working at 14. Today I build with AI. This is my story — in my own words.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Newsreader:opsz,wght@6..72,300..500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#e7e6e1;
+    --ink:#141312;
+    --muted:#4b4942;
+    --line:rgba(20,19,18,.16);
+    --paper-dim:rgba(231,230,225,.68);
+    --line-dark:rgba(231,230,225,.20);
+    --disp:"Fraunces", Georgia, "Times New Roman", serif;
+    --text:"Newsreader", Georgia, "Times New Roman", serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--text);
+    font-size:clamp(1.06rem, 0.98rem + 0.5vw, 1.2rem);
+    line-height:1.66;
+    font-weight:380;
+    letter-spacing:.003em;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+
+  ::selection{ background:var(--ink); color:var(--paper); }
+
+  a{ color:inherit; }
+
+  /* ---- texture layers ---- */
+  .grain, .vignette{
+    position:fixed; inset:0; width:100vw; height:100vh;
+    pointer-events:none; z-index:60;
+  }
+  .grain{ mix-blend-mode:overlay; opacity:.5; }
+  .vignette{
+    z-index:59;
+    background:radial-gradient(125% 100% at 50% 38%, transparent 52%, rgba(0,0,0,.17) 100%);
+    mix-blend-mode:multiply;
+  }
+
+  /* ---- layout ---- */
+  .wrap{
+    width:100%;
+    max-width:42rem;
+    margin-inline:auto;
+    padding-inline:clamp(1.25rem, 5vw, 2rem);
+  }
+  .band{ padding-block:clamp(3.2rem, 9vw, 6rem); position:relative; z-index:1; }
+
+  /* ---- hero ---- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    background:var(--ink);
+    color:var(--paper);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    overflow:hidden;
+    z-index:1;
+  }
+  .hero::after{ /* extra darkroom grain over the black */
+    content:""; position:absolute; inset:0;
+    background-image:var(--noise);
+    background-size:140px 140px;
+    mix-blend-mode:screen; opacity:.42; pointer-events:none;
+  }
+  .hero .wrap{ padding-block:clamp(2.5rem, 7vw, 4rem); position:relative; z-index:2; }
+  .hero-name{
+    font-family:var(--disp);
+    font-optical-sizing:auto;
+    font-weight:340;
+    font-variation-settings:"opsz" 144;
+    font-size:clamp(3.3rem, 15vw, 8.2rem);
+    line-height:.92;
+    letter-spacing:-.02em;
+  }
+  .hero-tag{
+    font-family:var(--text);
+    font-weight:360;
+    font-size:clamp(1.1rem, 1rem + 1.4vw, 1.55rem);
+    color:var(--paper-dim);
+    margin-top:1.1rem;
+    max-width:26ch;
+  }
+  .hero-cue{
+    margin-top:clamp(2rem, 6vw, 3.4rem);
+    display:flex; align-items:center; gap:.7rem;
+    color:var(--paper-dim);
+    font-size:.82rem;
+    letter-spacing:.02em;
+  }
+  .hero-cue .bar{ width:2.2rem; height:1px; background:var(--line-dark); }
+
+  /* ---- story ---- */
+  .lead{
+    font-family:var(--disp);
+    font-weight:360;
+    font-size:clamp(1.5rem, 1.2rem + 2vw, 2.2rem);
+    line-height:1.28;
+    letter-spacing:-.01em;
+    margin-bottom:clamp(2.2rem, 6vw, 3.4rem);
+  }
+  .phase{ margin-top:clamp(2.6rem, 7vw, 4rem); }
+  .phase:first-of-type{ margin-top:0; }
+  .yr{
+    font-family:var(--disp);
+    font-weight:320;
+    font-variation-settings:"opsz" 144;
+    font-size:clamp(2.7rem, 11vw, 5rem);
+    line-height:.86;
+    letter-spacing:-.015em;
+    color:var(--ink);
+  }
+  .ttl{
+    font-family:var(--disp);
+    font-weight:540;
+    font-size:clamp(1.12rem, 1rem + 0.7vw, 1.4rem);
+    letter-spacing:-.005em;
+    margin:.5rem 0 1.15rem;
+  }
+  .phase p{ margin-bottom:1.05rem; max-width:63ch; }
+  .phase p:last-child{ margin-bottom:0; }
+
+  .pull{
+    font-family:var(--disp);
+    font-weight:360;
+    font-size:clamp(1.55rem, 1.2rem + 2.6vw, 2.7rem);
+    line-height:1.2;
+    letter-spacing:-.012em;
+    margin:clamp(2.4rem, 7vw, 3.6rem) 0;
+    max-width:22ch;
+  }
+
+  /* ---- generic section heading ---- */
+  .h{
+    font-family:var(--disp);
+    font-weight:520;
+    font-size:clamp(1.5rem, 1.2rem + 1.6vw, 2.1rem);
+    letter-spacing:-.01em;
+    margin-bottom:clamp(1.4rem, 4vw, 2rem);
+  }
+
+  /* ---- learning list ---- */
+  .learn{ list-style:none; max-width:60ch; }
+  .learn li{
+    padding:.7rem 0 .7rem 1.6rem;
+    position:relative;
+    border-top:1px solid var(--line);
+  }
+  .learn li:first-child{ border-top:0; }
+  .learn li::before{
+    content:""; position:absolute; left:.15rem; top:1.28rem;
+    width:.5rem; height:.5rem; background:var(--ink); border-radius:50%;
+  }
+
+  /* ---- skills ---- */
+  .skill{
+    display:grid; grid-template-columns:1fr; gap:.3rem;
+    padding:1.1rem 0;
+    border-top:1px solid var(--line);
+  }
+  .skill:last-child{ border-bottom:1px solid var(--line); }
+  .skill .k{
+    font-family:var(--disp); font-weight:560;
+    font-size:1.02rem; letter-spacing:-.005em;
+  }
+  .skill .v{ color:var(--muted); }
+  @media(min-width:600px){
+    .skill{ grid-template-columns:13rem 1fr; gap:1.4rem; align-items:baseline; }
+  }
+
+  /* ---- projects ---- */
+  .proj{ padding:1.5rem 0; border-top:1px solid var(--line); }
+  .proj:last-of-type{ border-bottom:1px solid var(--line); }
+  .proj h3{
+    font-family:var(--disp); font-weight:540;
+    font-size:clamp(1.2rem, 1.05rem + 0.8vw, 1.45rem);
+    letter-spacing:-.008em; line-height:1.2;
+  }
+  .proj h3 a{ text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:1px; }
+  .proj h3 a:hover, .proj h3 a:focus-visible{ border-color:var(--ink); }
+  .proj p{ color:var(--muted); margin:.55rem 0 .65rem; max-width:60ch; }
+  .code{
+    font-size:.9rem; text-decoration:none;
+    border-bottom:1px solid var(--ink);
+    padding-bottom:1px; color:var(--ink);
+  }
+  .code:hover, .code:focus-visible{ background:var(--ink); color:var(--paper); }
+  .proj-note{ margin-top:1.4rem; color:var(--muted); max-width:60ch; }
+  .proj-note em{ font-style:italic; }
+
+  /* ---- ask ---- */
+  .ask p{
+    font-size:clamp(1.12rem, 1.02rem + 0.6vw, 1.32rem);
+    line-height:1.62; max-width:60ch; margin-bottom:1.1rem;
+  }
+  .mentor{
+    font-family:var(--disp) !important;
+    font-weight:400;
+    font-size:clamp(1.35rem, 1.1rem + 1.6vw, 1.9rem) !important;
+    line-height:1.28; letter-spacing:-.01em;
+    margin-top:.4rem;
+  }
+
+  /* ---- connect ---- */
+  .links{ list-style:none; }
+  .links li{ border-top:1px solid var(--line); }
+  .links li:last-child{ border-bottom:1px solid var(--line); }
+  .links a{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:.15rem 1rem;
+    padding:.95rem 0; text-decoration:none;
+  }
+  .links a .name{
+    font-family:var(--disp); font-weight:500;
+    font-size:clamp(1.25rem, 1.1rem + 1vw, 1.7rem);
+    letter-spacing:-.01em;
+  }
+  .links a .at{ color:var(--muted); font-size:.98rem; }
+  .links a:hover .name, .links a:focus-visible .name{ text-decoration:underline; text-underline-offset:4px; }
+
+  footer{
+    padding-block:clamp(2.6rem, 7vw, 4rem);
+    color:var(--muted);
+    font-size:.92rem;
+  }
+  footer .sig{ font-family:var(--disp); font-style:italic; font-weight:360; }
+
+  /* ---- reveal (one moment) ---- */
+  @keyframes focusIn{
+    from{ opacity:0; filter:blur(16px); }
+    to{ opacity:1; filter:blur(0); }
+  }
+  .hero-name{ animation:focusIn 1.4s cubic-bezier(.2,.7,.2,1) both; }
+  .hero-tag{ animation:focusIn 1.4s cubic-bezier(.2,.7,.2,1) .28s both; }
+  .hero-cue{ animation:focusIn 1.2s ease .6s both; }
+
+  a:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; border-radius:2px; }
+  .hero a:focus-visible{ outline-color:var(--paper); }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero-name, .hero-tag, .hero-cue{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- grain noise, reused by hero via CSS var below -->
+<svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+  <filter id="grainf"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  <rect width="100%" height="100%" filter="url(#grainf)"/>
+</svg>
+<div class="vignette" aria-hidden="true"></div>
+
+<style>
+  :root{ --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <h1 class="hero-name">Raj<br>Jaiswal</h1>
+  </div>
+</header>
+
+<main>
+
+  <!-- STORY -->
+  <section class="band">
+    <div class="wrap">
+      <p class="lead">This is my story.</p>
+
+      <div class="phase">
+        <div class="yr">2018&ndash;19</div>
+        <h2 class="ttl">Where it started</h2>
+        <p>Before everything, I started content creation from a Jio keypad 4G phone. Literally I made my 1st YouTube channel with this phone &mdash; it was education category, and I just used to shoot video of my notes by standing the JioPhone at a box. Then I uploaded, and I wrote each title, description and even the tags with the keypad. I uploaded around 20 long videos. This was around 2018 or 19. I used this keypad phone until I could buy a second-hand Android phone for &#8377;3000.</p>
+      </div>
+
+      <div class="phase">
+        <div class="yr">2020</div>
+        <h2 class="ttl">Fourteen, and my first job</h2>
+        <p>So I was 14, when my financial condition became worst. My father and mother both were ill when the lockdown started in India around 2020. That was the first time I started working for someone. I went to the local market to ask for any job, and I got one at a general store for &#8377;4000 / $42 per month. The job was really tough for me. I had no idea about the world at that time.</p>
+        <p>Also at that time YT Shorts was newly launched. I used to play games, so I made a gaming YouTube channel and uploaded shorts daily. By my hard work and consistency I reached 230k+ subscribers. But I was so immature and had no idea how to convert it into money &mdash; so I just got stuck with a little Shorts fund.</p>
+        <p>For around 2 months I handled my family. My mom and dad became healthy again after 1.5 to 2 months, and my father started handling the family. After that my YouTube channel started getting dead &mdash; because I was totally immature, I couldn&rsquo;t understand who my actual audience was, or how they could bring me profits.</p>
+      </div>
+
+      <div class="phase">
+        <div class="yr">2020&ndash;21</div>
+        <h2 class="ttl">Learning to earn</h2>
+        <p>Then I got a friend who was running FB ads, and I got connected with him. I knew editing by then, because I had been creating content for the last 2 years. So I edited his videos and he closed the leads. We earned a little money from there too. Then that also stopped.</p>
+      </div>
+
+      <div class="phase">
+        <div class="yr">2022</div>
+        <h2 class="ttl">The Mumbai decision</h2>
+        <p>The problem was, my father&rsquo;s earning was not enough. So in 2022 I decided I would go to Mumbai &mdash; to see the world, to know the real world, and to support my family financially. My family was really afraid, because I had never gone out of my district in my life and had never visited anywhere on my own. But I took the risk and went to Mumbai.</p>
+      </div>
+
+      <p class="pull">Here I will not tell what I struggled in Mumbai. I never told anyone &mdash; not even my family.</p>
+
+      <div class="phase">
+        <p>My education also got left behind. I just became a 10th dropout. It&rsquo;s not an issue now &mdash; this year I&rsquo;m continuing open schooling and going for a bachelor&rsquo;s degree.</p>
+      </div>
+
+      <div class="phase">
+        <div class="yr">2026</div>
+        <h2 class="ttl">Now</h2>
+        <p>And it&rsquo;s 2026. This year I bought a laptop and started learning AI. I&rsquo;ve become much more, in many things, than I was before.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEARNING -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="h">What I&rsquo;m learning right now</h2>
+      <ul class="learn">
+        <li>Going deeper into GenAI engineering &mdash; this is my main focus.</li>
+        <li>Building backends with FastAPI for my AI apps.</li>
+        <li>Learning new pieces as my projects need them &mdash; I picked up OCR while building my document processor.</li>
+        <li>Working on my English and communication every day.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="h">Skills</h2>
+      <div class="skill"><div class="k">Building AI apps</div><div class="v">Python, LLMs (Gemini), RAG (embeddings, vector search), LangChain</div></div>
+      <div class="skill"><div class="k">Backends &amp; apps</div><div class="v">FastAPI, Streamlit, Node.js basics</div></div>
+      <div class="skill"><div class="k">Data</div><div class="v">SQLite (multi-table databases), JSON</div></div>
+      <div class="skill"><div class="k">Document AI</div><div class="v">OCR (Tesseract), field extraction, confidence scoring</div></div>
+      <div class="skill"><div class="k">Deploying live</div><div class="v">Render, Streamlit Cloud, Docker, Git &amp; GitHub</div></div>
+      <div class="skill"><div class="k">Improving right now</div><div class="v">English and communication, advanced RAG and AI agents, FastAPI depth</div></div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="h">Projects</h2>
+
+      <div class="proj">
+        <h3><a href="https://github.com/rajj884078-del" target="_blank" rel="noopener">AI Customer Support Platform</a></h3>
+        <p>My flagship. A business adds its own data, and customers chat with an AI that answers from it. Live on Streamlit.</p>
+        <a class="code" href="https://github.com/rajj884078-del" target="_blank" rel="noopener">View code</a>
+      </div>
+
+      <div class="proj">
+        <h3><a href="https://github.com/rajj884078-del" target="_blank" rel="noopener">AI Document Processor</a></h3>
+        <p>Upload a document, OCR pulls the text, an LLM extracts the key fields, shows a confidence score, and flags low-confidence cases for a human to check. Built with FastAPI, Tesseract and Gemini, deployed on Render.</p>
+        <a class="code" href="https://github.com/rajj884078-del" target="_blank" rel="noopener">View code</a>
+      </div>
+
+      <div class="proj">
+        <h3><a href="https://github.com/rajj884078-del" target="_blank" rel="noopener">Resume Analyzer</a></h3>
+        <p>Reads a resume and gives back structured feedback.</p>
+        <a class="code" href="https://github.com/rajj884078-del" target="_blank" rel="noopener">View code</a>
+      </div>
+
+      <div class="proj">
+        <h3><a href="https://github.com/rajj884078-del" target="_blank" rel="noopener">PDF Chat App</a></h3>
+        <p>Chat with any PDF and get answers from inside it.</p>
+        <a class="code" href="https://github.com/rajj884078-del" target="_blank" rel="noopener">View code</a>
+      </div>
+
+      <div class="proj">
+        <h3><a href="https://github.com/rajj884078-del" target="_blank" rel="noopener">Wine Restaurant Chatbot</a></h3>
+        <p>A chatbot that answers customer questions for a restaurant.</p>
+        <a class="code" href="https://github.com/rajj884078-del" target="_blank" rel="noopener">View code</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASK -->
+  <section class="band ask">
+    <div class="wrap">
+      <h2 class="h">What I&rsquo;m looking for</h2>
+      <p>I always had interest in making apps and coding since I was 14 &mdash; I just wasn&rsquo;t able to afford it at that time. Now I can. Currently I&rsquo;m at a waiter position, and it has a career too, but I won&rsquo;t find people like me in this industry, and I feel I&rsquo;m not able to put my knowledge at the right place. So if someone finds me suitable for any position in the AI industry &mdash; please give me an opportunity.</p>
+      <p class="mentor">And if anyone would love to guide me &mdash; please, be my mentor. I&rsquo;ll always be grateful.</p>
+    </div>
+  </section>
+
+  <!-- CONNECT -->
+  <section class="band">
+    <div class="wrap">
+      <h2 class="h">Connect</h2>
+      <nav>
+        <ul class="links">
+          <li><a href="mailto:rajj884078@gmail.com"><span class="name">Email</span><span class="at">rajj884078@gmail.com</span></a></li>
+          <li><a href="https://github.com/rajj884078-del" target="_blank" rel="noopener"><span class="name">GitHub</span><span class="at">github.com/rajj884078-del</span></a></li>
+          <li><a href="https://www.linkedin.com/in/raj-jaiswal-bba2332b3" target="_blank" rel="noopener"><span class="name">LinkedIn</span><span class="at">raj-jaiswal-bba2332b3</span></a></li>
+          <li><a href="https://instagram.com/waitertobillionaire" target="_blank" rel="noopener"><span class="name">Instagram</span><span class="at">@waitertobillionaire</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
